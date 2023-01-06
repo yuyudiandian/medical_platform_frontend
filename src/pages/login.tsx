@@ -1,16 +1,25 @@
 import { useNavigate } from 'react-router-dom'
 import { Row, Col, Card, Button, Checkbox, Form, Input, message } from 'antd'
-import { defaultImg } from '../utils/tools'
+import { defaultImg, setToken } from '../utils/tools'
+import { loginAPI } from '../services/auth'
 
 function Login() {
     const navigate = useNavigate()
-	const onFinishLogin = (values: any) => {
-        message.success('登录成功')
-        navigate('/admin/dashboard')
+    const onFinishLogin = async (values: any) => {
+        const res = await loginAPI(values)
+        console.log(res)
+        if (res.success) {
+            message.success(res.errorMessage)
+            setToken(res.data)
+            navigate('/admin/dashboard')
+        } else { 
+            message.error(res.errorMessage)
+        }
+        
 	}
 
 	return (
-		<Row style={{background: 'linear-gradient(to bottom, #93EDC7, #1CD8D2)', height: '100vh'}}>
+		<Row style={{ background: 'linear-gradient(to bottom, #93EDC7, #1CD8D2)', height: '100vh' }}>
 			<Col
 				md={{
 					span: 8,
@@ -24,7 +33,7 @@ function Login() {
 				<img src={defaultImg} style={{ display: 'block', margin: '20px auto', borderRadius: '16px', width: '100px' }} />
 				<Card title='在线药物管理平台'>
 					<Form name='basic' labelCol={{ span: 6 }} wrapperCol={{ span: 24 }} initialValues={{ remember: true }} onFinish={onFinishLogin} autoComplete='off'>
-						<Form.Item label='用户名' name='username' rules={[{ required: true, message: 'Please input your username!' }]}>
+						<Form.Item label='用户名' name='userName' rules={[{ required: true, message: 'Please input your username!' }]}>
 							<Input />
 						</Form.Item>
 
