@@ -1,0 +1,54 @@
+#components-layout-demo-custom-trigger .trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#components-layout-demo-custom-trigger .trigger:hover {
+  color: #1890ff;
+}
+
+#components-layout-demo-custom-trigger .logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.layout{
+    width: 100vw;
+    height: 100vh;
+}
+
+.menuImg{
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin: 4px auto;
+}
+
+.anticon.anticon-menu-fold.trigger,.anticon.anticon-menu-unfold.trigger{
+    margin: auto 16px;
+}
+
+.app-title{
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.Dropdown{
+    right: 10px;
+}
+
+.ant-layout-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    float: right;
+    margin:4px 10px
+}
