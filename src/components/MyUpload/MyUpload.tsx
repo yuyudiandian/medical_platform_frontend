@@ -3,6 +3,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { message, Upload } from 'antd'
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
+import { uploadActionUrl, dalImg } from '../../utils/tools'
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
 	const reader = new FileReader()
@@ -22,9 +23,13 @@ const beforeUpload = (file: RcFile) => {
 	return isJpgOrPng && isLt2M
 }
 
-const MyUpload: React.FC = () => {
+type MyUploadProps = {
+    imageUrl: string | undefined,
+    setImageUrl: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+const MyUpload = ({ imageUrl, setImageUrl }: MyUploadProps) => {
 	const [loading, setLoading] = useState(false)
-	const [imageUrl, setImageUrl] = useState<string>()
 
 	const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
 		if (info.file.status === 'uploading') {
@@ -33,10 +38,12 @@ const MyUpload: React.FC = () => {
 		}
 		if (info.file.status === 'done') {
 			// Get this url from response in real world.
-			getBase64(info.file.originFileObj as RcFile, url => {
-				setLoading(false)
-				setImageUrl(url)
-			})
+			// getBase64(info.file.originFileObj as RcFile, url => {
+			// 	setLoading(false)
+			// 	setImageUrl(url)
+			// })
+			setLoading(false)
+			setImageUrl(info.file.response.data)
 		}
 	}
 
@@ -48,16 +55,17 @@ const MyUpload: React.FC = () => {
 	)
 
 	return (
-        <Upload
-            name='avatar'
-            listType='picture-card'
-            className='avatar-uploader'
-            showUploadList={false}
-            // 服务器接口地址
-            action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-            beforeUpload={beforeUpload}
-            onChange={handleChange}>
-			{imageUrl ? <img src={imageUrl} alt='avatar' style={{ width: '100%' }} /> : uploadButton}
+		<Upload
+			name='file'
+			listType='picture-card'
+			className='avatar-uploader'
+			showUploadList={false}
+			// 服务器接口地址
+			action={uploadActionUrl}
+			beforeUpload={beforeUpload}
+			onChange={handleChange}
+		>
+			{imageUrl ? <img src={dalImg(imageUrl)} alt='avatar' style={{ width: '100%' }} /> : uploadButton}
 		</Upload>
 	)
 }
