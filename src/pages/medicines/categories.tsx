@@ -1,5 +1,4 @@
 import { Card, Button, Form, Input, Table, Space, Modal, message, Popconfirm } from 'antd'
-import type { PaginationProps } from 'antd'
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import MyUpload from '../../components/MyUpload/MyUpload'
