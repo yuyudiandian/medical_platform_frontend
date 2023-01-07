@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import MyUpload from '../../components/MyUpload/MyUpload'
 import { loadMedicineListDataAPI, loadMedicinesInfoDataAPI, insertMedicinesInfoAPI, updateMedicinesInfoByIdAPI, delMedicinesInfoByIdAPI } from '../../services/medicine'
 import { dalImg } from '../../utils/tools'
+import MyEditor from '../../components/MyEditor/MyEditor'
 
 const setColumns = (v: any) => {
 	return [
@@ -44,6 +45,13 @@ const setColumns = (v: any) => {
 			dataIndex: 'amount'
 		},
 		{
+			title: '简介',
+            dataIndex: 'content',
+            render(v: any, r: any) { 
+                return <div dangerouslySetInnerHTML={{ __html: r.content }}></div>
+            }
+		},
+		{
 			title: '操作',
 			width: '120px',
 			key: 'operate',
@@ -59,6 +67,7 @@ const setColumns = (v: any) => {
 								v.myForm.setFieldsValue(r)
 								v.setCurrentId(r.id)
 								v.setImageUrl(r.image)
+                                v.setHtml(r.content)
 							}}
 						></Button>
 						<Popconfirm
@@ -95,14 +104,14 @@ function MedicinesInformation() {
 	const [currentId, setCurrentId] = useState('')
 	const [medicineDataTotal, setMedicineDataTotal] = useState(0) // 药品总数量
 	const [imageUrl, setImageUrl] = useState<string>() // 上传的图像数据
-	const [categories, setCategories] = useState([]) // 分类信息
+    const [categories, setCategories] = useState([]) // 分类信息
+    const [html, setHtml] = useState('')
 
 	const [myForm] = Form.useForm()
 
 	useEffect(() => {
 		// 获取药品信息数据
 		loadMedicinesInfoDataAPI(query).then(res => {
-			console.log(res)
 			setMedicineData(res.data.list)
 			setMedicineDataTotal(res.data.total) // 设置总数量
 		})
@@ -116,7 +125,8 @@ function MedicinesInformation() {
 		if (!isModalShow) {
 			// 关闭弹窗之后重置数据
 			setCurrentId('')
-			setImageUrl('')
+            setImageUrl('')
+            setHtml('')
 		}
 	})
 
@@ -151,7 +161,7 @@ function MedicinesInformation() {
 						</Form.Item>
 					</Form>
 					<Table
-						columns={setColumns({ setIsModalShow, setCurrentId, setQuery, setImageUrl, myForm })}
+						columns={setColumns({ setIsModalShow, setCurrentId, setQuery, setImageUrl, setHtml, myForm })}
 						dataSource={medicineData}
 						rowKey='id'
 						pagination={{
@@ -168,6 +178,7 @@ function MedicinesInformation() {
 				</Space>
 			</Card>
 			<Modal
+				width='1000px'
 				title='编辑'
 				open={isModalShow}
 				maskClosable={false}
@@ -183,14 +194,14 @@ function MedicinesInformation() {
 					form={myForm}
 					onFinish={async v => {
 						if (currentId) {
-							const res = await updateMedicinesInfoByIdAPI(currentId, { ...v, image: imageUrl })
+							const res = await updateMedicinesInfoByIdAPI(currentId, { ...v, image: imageUrl, content: html })
 							if (res.success) {
 								message.success('修改数据成功！')
 							} else {
 								message.error(res.errorMessage)
 							}
 						} else {
-							const res = await insertMedicinesInfoAPI({ ...v, image: imageUrl })
+							const res = await insertMedicinesInfoAPI({ ...v, image: imageUrl, content: html })
 							if (res.success) {
 								message.success('数据新增成功！')
 							} else {
@@ -224,6 +235,9 @@ function MedicinesInformation() {
 					</Form.Item>
 					<Form.Item label='简介' name='desc'>
 						<Input.TextArea placeholder='请输入简介' />
+					</Form.Item>
+					<Form.Item label='详情' name='desc'>
+						<MyEditor html={html} setHtml={setHtml} />
 					</Form.Item>
 				</Form>
 			</Modal>
