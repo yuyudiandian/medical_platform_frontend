@@ -1,21 +1,24 @@
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Row, Col, Card, Button, Checkbox, Form, Input, message } from 'antd'
 import { defaultImg, setToken } from '../utils/tools'
 import { loginAPI } from '../services/auth'
+import { context } from '../components/AppProvider'
 
 function Login() {
-    const navigate = useNavigate()
-    const onFinishLogin = async (values: any) => {
-        const res = await loginAPI(values)
-        console.log(res)
-        if (res.success) {
-            message.success(res.errorMessage)
+	const navigate = useNavigate()
+	const { resetMenus } = useContext(context)
+	const onFinishLogin = async (values: any) => {
+		const res = await loginAPI(values)
+		console.log(res)
+		if (res.success) {
+			message.success(res.errorMessage)
             setToken(res.data)
-            navigate('/admin/dashboard')
-        } else { 
-            message.error(res.errorMessage)
-        }
-        
+            resetMenus('admin') // 重置路由菜单
+			navigate('/admin/dashboard')
+		} else {
+			message.error(res.errorMessage)
+		}
 	}
 
 	return (

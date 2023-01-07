@@ -168,14 +168,14 @@ function MedicinesCategories() {
 					form={myForm}
 					onFinish={async v => {
 						if (currentId) {
-                            const res = await updateMedicineDataByIdAPI(currentId, { ...v, image: imageUrl } )
+							const res = await updateMedicineDataByIdAPI(currentId, { ...v, image: imageUrl })
 							if (res.success) {
 								message.success('修改数据成功！')
 							} else {
 								message.error(res.errorMessage)
 							}
 						} else {
-                            const res = await insertMedicineAPI({ ...v, image: imageUrl } )
+							const res = await insertMedicineAPI({ ...v, image: imageUrl })
 							if (res.success) {
 								message.success('数据新增成功！')
 							} else {
